@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Anuitas Finansial</title>
+    
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --secondary: #0f172a;
+            --accent: #10b981;
+            --bg-body: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.05);
+            --radius-lg: 16px;
+            --radius-md: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: var(--secondary);
+            color: #fff;
+            padding: 18px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        .logo {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.03);
+        }
+
+        .logo i { 
+            color: var(--primary); 
+            transition: transform 0.5s ease;
+        }
+
+        .logo:hover i {
+            transform: rotate(360deg);
+        }
+
+        nav a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-left: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover { color: #fff; }
+        nav a:hover::after { width: 100%; }
+
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 60px 24px 70px;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero p {
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: -30px auto 60px;
+            padding: 0 24px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 15px 30px -5px rgba(0,0,0,0.08);
+        }
+
+        /* --- ANIMASI SCROLL (FADE IN & SLIDE UP) --- */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .animate-on-scroll.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 14px;
+        }
+
+        .section-header i {
+            font-size: 1.4rem;
+            color: var(--primary);
+            background: #eff6ff;
+            padding: 10px;
+            border-radius: 10px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .card:hover .section-header i {
+            transform: scale(1.1) rotate(5deg);
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--secondary);
+            text-transform: uppercase;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper input, .input-wrapper select {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: #f8fafc;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper input:focus, .input-wrapper select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .input-prefix {
+            position: absolute;
+            right: 14px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+            pointer-events: none;
+        }
+
+        /* --- BUTTON & ANIMASI RIPPLE / HOVER --- */
+        .btn-submit {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit i {
+            transition: transform 0.3s ease;
+        }
+
+        .btn-submit:hover i {
+            transform: scale(1.2) rotate(-10deg);
+        }
+
+        /* Stat Cards Animation */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .stats-container.active { 
+            display: grid; 
+        }
+
+        .stat-card {
+            background: #f8fafc;
+            padding: 18px;
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: scale(0.95) translateY(10px);
+        }
+
+        .stats-container.animate-in .stat-card {
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .stats-container.animate-in .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stats-container.animate-in .stat-card:nth-child(2) { animation-delay: 0.25s; }
+        .stats-container.animate-in .stat-card:nth-child(3) { animation-delay: 0.4s; }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            background: #fff;
+        }
+
+        .stat-card.accent { border-left-color: var(--accent); }
+        .stat-card.dark { border-left-color: var(--secondary); }
+
+        .stat-label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-top: 4px;
+        }
+
+        /* --- DESAIN TABEL AMORTISASI & ANIMASI BARIS --- */
+        .table-responsive {
+            margin-top: 30px;
+            border-radius: var(--radius-md);
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .table-responsive.show-table {
+            display: block;
+            opacity: 1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 0.88rem;
+            white-space: nowrap;
+        }
+
+        table th, table td {
+            padding: 14px 20px;
+            vertical-align: middle;
+        }
+
+        table th {
+            background-color: var(--secondary);
+            color: #f8fafc;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        table th:first-child, table td:first-child {
+            text-align: center;
+            width: 100px;
+        }
+
+        table th:not(:first-child), table td:not(:first-child) {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        /* Animasi Staggered Row */
+        table tbody tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s ease, transform 0.2s ease;
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        table tbody tr.row-animate {
+            animation: rowFadeIn 0.4s ease forwards;
+        }
+
+        table tbody tr:hover {
+            background-color: #eff6ff;
+            transform: scale(1.002);
+        }
+
+        table tfoot tr {
+            background-color: #edf2f7;
+            font-weight: 800;
+            color: var(--secondary);
+            border-top: 2px solid #cbd5e1;
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        table tfoot tr.row-animate {
+            animation: rowFadeIn 0.5s ease forwards;
+        }
+
+        .info-box {
+            background-color: #f8fafc;
+            border-left: 4px solid var(--primary);
+            padding: 16px 20px;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .info-box:hover {
+            background-color: #f1f5f9;
+        }
+
+        .info-box p {
+            color: var(--text-main);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        footer {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            background: #fff;
+        }
+
+        /* --- KEYFRAMES ANIMASI --- */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9) translateY(15px);
+            }
+            70% {
+                transform: scale(1.02) translateY(-2px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes rowFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        .shake-input {
+            animation: shake 0.4s ease-in-out;
+            border-color: #ef4444 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fa-solid fa-calculator"></i> AnuitasWeb
+            </div>
+            <nav>
+                <a href="#pengertian">Pengertian</a>
+                <a href="#kalkulator">Kalkulator</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Kalkulator Anuitas Finansial</h1>
+        <p>Hitung nilai Anuitas, Bunga, dan Angsuran secara praktis, akurat, dan interaktif.</p>
+    </section>
+
+    <div class="container">
+
+        <!-- 1. PENGERTIAN ANUITAS -->
+        <section id="pengertian" class="card animate-on-scroll">
+            <div class="section-header">
+                <i class="fa-solid fa-book-open"></i>
+                <h2>Pengertian Anuitas</h2>
+            </div>
+
+            <div class="info-box">
+                <p><strong>Anuitas</strong> adalah sejumlah pembayaran pelunasan pinjaman yang besarnya tetap pada setiap jangka waktu tertentu. Anuitas terdiri dari dua bagian, yaitu porsi <strong>angsuran pokok</strong> untuk mengurangi sisa pinjaman dan porsi <strong>bunga</strong> sebagai jasa atas peminjaman modal. Total anuitas pada setiap periode nilainya selalu konstan, namun porsi angsuran pokok akan semakin membesar sedangkan porsi bunga akan semakin mengecil seiring berjalannya periode.</p>
+            </div>
+        </section>
+
+        <!-- 2. KALKULATOR ANUITAS -->
+        <section id="kalkulator" class="card animate-on-scroll">
+            <div class="section-header">
+                <i class="fa-solid fa-chart-pie"></i>
+                <h2>Perhitungan Anuitas</h2>
+            </div>
+
+            <div class="calc-grid">
+                <div class="form-group">
+                    <label>Pinjaman Awal (M)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="pinjaman" placeholder="1000000" min="0">
+                        <span class="input-prefix">IDR</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Tipe Suku Bunga</label>
+                    <div class="input-wrapper">
+                        <select id="tipeBunga" onchange="updatePrefixBunga()">
+                            <option value="bulan">Per Bulan (% / Bln)</option>
+                            <option value="tahun">Per Tahun (% / Thn)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Suku Bunga (i)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="bungaInput" step="0.01" placeholder="1" min="0">
+                        <span class="input-prefix" id="prefixBunga">% / Bln</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Jangka Waktu Periode (n)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="periode" placeholder="12" min="1">
+                        <span class="input-prefix">Bulan</span>
+                    </div>
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>Anuitas (Opsional)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="anuitasManual" placeholder="(Kosongkan jika ingin dihitung otomatis)" min="0">
+                        <span class="input-prefix">IDR</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-submit" id="btnHitung" onclick="hitungAnuitas()">
+                <i class="fa-solid fa-calculator"></i> Hitung Anuitas & Buat Tabel
+            </button>
+
+            <!-- STATISTIK RINGKASAN -->
+            <div id="statsBox" class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-label">Besar Anuitas (A)</div>
+                    <div class="stat-value" id="statAnuitas">Rp 0</div>
+                </div>
+                <div class="stat-card accent">
+                    <div class="stat-label">Angsuran Pertama (a₁)</div>
+                    <div class="stat-value" id="statA1">Rp 0</div>
+                </div>
+                <div class="stat-card dark">
+                    <div class="stat-label">Bunga Pertama (b₁)</div>
+                    <div class="stat-value" id="statB1">Rp 0</div>
+                </div>
+            </div>
+
+            <!-- TABEL AMORTISASI PERIODE -->
+            <div id="amortisasiContainer" class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>PERIODE (N)</th>
+                            <th>PINJAMAN AWAL</th>
+                            <th>BUNGA</th>
+                            <th>ANGSURAN</th>
+                            <th>ANUITAS</th>
+                            <th>SISA PINJAMAN</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelBody"></tbody>
+                    <tfoot id="tabelFoot"></tfoot>
+                </table>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p><strong>KELOMPOK 3</strong></p>
+        <P>Arya Rayyadia Putra B. (04)</P>
+        <p>Ayra Safira Kencana P. (06)</p>
+        <p>Dinda Reysha Z. (08)</p>
+        <p>Indar Fadilah (15)</p>
+        <p>Rafadhiya Naufal Nasywan (28)</p>
+        <p>Rosi Akmalia (33)</p>
+        <p>Shiva Aura P. B. (36)</p>
+    </footer>
+
+    <script>
+        // --- LOGIKA ANIMASI SCROLL (INTERSECTION OBSERVER) ---
+        document.addEventListener("DOMContentLoaded", function () {
+            const observerOptions = {
+                root: null,
+                rootMargin: "0px",
+                threshold: 0.15
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("show");
+                    }
+                });
+            }, observerOptions);
+
+            const animatedElements = document.querySelectorAll(".animate-on-scroll");
+            animatedElements.forEach(el => observer.observe(el));
+        });
+
+        // --- FORMATTING LOGIC ---
+        function formatRupiah(val) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(val);
+        }
+
+        function updatePrefixBunga() {
+            const tipe = document.getElementById('tipeBunga').value;
+            document.getElementById('prefixBunga').innerText = tipe === 'bulan' ? '% / Bln' : '% / Thn';
+        }
+
+        // --- KALKULATOR LOGIC WITH ANIMATIONS ---
+        function hitungAnuitas() {
+            const pinjamanEl = document.getElementById('pinjaman');
+            const bungaEl = document.getElementById('bungaInput');
+            const periodeEl = document.getElementById('periode');
+
+            const M = parseFloat(pinjamanEl.value);
+            const tipeBunga = document.getElementById('tipeBunga').value;
+            const rateInput = parseFloat(bungaEl.value);
+            const n = parseInt(periodeEl.value);
+            const manualA = parseFloat(document.getElementById('anuitasManual').value);
+
+            // Reset shake classes
+            [pinjamanEl, bungaEl, periodeEl].forEach(el => el.classList.remove('shake-input'));
+
+            let hasError = false;
+
+            if (isNaN(M) || M <= 0) { pinjamanEl.classList.add('shake-input'); hasError = true; }
+            if (isNaN(rateInput) || rateInput <= 0) { bungaEl.classList.add('shake-input'); hasError = true; }
+            if (isNaN(n) || n <= 0) { periodeEl.classList.add('shake-input'); hasError = true; }
+
+            if (hasError) {
+                setTimeout(() => {
+                    [pinjamanEl, bungaEl, periodeEl].forEach(el => el.classList.remove('shake-input'));
+                }, 500);
+                return;
+            }
+
+            let i = rateInput / 100;
+            if (tipeBunga === 'tahun') {
+                i = (rateInput / 12) / 100;
+            }
+
+            let A = 0;
+            if (!isNaN(manualA) && manualA > 0) {
+                A = manualA;
+            } else {
+                A = M * (i / (1 - Math.pow(1 + i, -n)));
+            }
+
+            const b1 = M * i;
+            const a1 = A - b1;
+
+            document.getElementById('statAnuitas').innerText = formatRupiah(A);
+            document.getElementById('statA1').innerText = formatRupiah(a1);
+            document.getElementById('statB1').innerText = formatRupiah(b1);
+            
+            // Animasi Statistik Cards
+            const statsBox = document.getElementById('statsBox');
+            statsBox.classList.remove('animate-in');
+            statsBox.classList.add('active');
+            
+            // Reflow trigger untuk mereset animasi CSS
+            void statsBox.offsetWidth;
+            statsBox.classList.add('animate-in');
+
+            // Generasi Tabel & Animasikan Baris
+            generasiTabel(M, i, n, A, a1);
+        }
+
+        function generasiTabel(M, i, n, A, a1) {
+            const tbody = document.getElementById('tabelBody');
+            const tfoot = document.getElementById('tabelFoot');
+            const containerTable = document.getElementById('amortisasiContainer');
+
+            tbody.innerHTML = '';
+            tfoot.innerHTML = '';
+
+            let sisaPinjaman = M;
+            let totalBunga = 0;
+            let totalAngsuran = 0;
+
+            for (let periode = 1; periode <= n; periode++) {
+                let pinjamanAwal = sisaPinjaman;
+
+                let bn = pinjamanAwal * i;
+                let an = A - bn;
+
+                if (periode === n) {
+                    an = pinjamanAwal;
+                    bn = A - an;
+                    sisaPinjaman = 0;
+                } else {
+                    sisaPinjaman -= an;
+                }
+
+                totalBunga += bn;
+                totalAngsuran += an;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${periode}</td>
+                    <td>${formatRupiah(pinjamanAwal)}</td>
+                    <td>${formatRupiah(bn)}</td>
+                    <td>${formatRupiah(an)}</td>
+                    <td>${formatRupiah(A)}</td>
+                    <td>${formatRupiah(Math.max(0, sisaPinjaman))}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+
+            const footTr = document.createElement('tr');
+            footTr.innerHTML = `
+                <td colspan="2" style="text-align: center;">TOTAL</td>
+                <td>${formatRupiah(totalBunga)}</td>
+                <td>${formatRupiah(totalAngsuran)}</td>
+                <td>${formatRupiah(totalBunga + totalAngsuran)}</td>
+                <td>-</td>
+            `;
+            tfoot.appendChild(footTr);
+
+            // Tampilkan container tabel
+            containerTable.classList.add('show-table');
+
+            // Staggered Animation untuk setiap baris tabel
+            const rows = tbody.querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                row.classList.remove('row-animate');
+                // Batasi delay maksimum agar jika periode sangat panjang (misal > 50), animasi tidak terlalu lama
+                const delay = Math.min(index * 0.04, 1.2);
+                row.style.animationDelay = `${delay}s`;
+                
+                // Reflow
+                void row.offsetWidth;
+                row.classList.add('row-animate');
+            });
+
+            // Animasi untuk Footer Tabel
+            footTr.classList.remove('row-animate');
+            const footDelay = Math.min(rows.length * 0.04, 1.3);
+            footTr.style.animationDelay = `${footDelay}s`;
+            void footTr.offsetWidth;
+            footTr.classList.add('row-animate');
+
+            // Smooth Scroll ke Tabel setelah dihitung
+            setTimeout(() => {
+                statsBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+    </script>
+</body>
+</html>
